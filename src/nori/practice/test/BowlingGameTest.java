@@ -66,7 +66,6 @@ public class BowlingGameTest {
 	@Test
 	public void スコア文字列を渡すと合計が返却される() {
 		String score = "11|22|33|44|55|66|77|88|99|123";
-		int excepted = 1 + 1 + 2 + 2 + 3 + 3 + 4 + 4 + 5 + 5 + 6 + 6 + 7 + 7 + 8 + 8 + 9 + 9 + 1 + 0 + 0;
 		gameMng = new BowlingScoreMng(score);
 		gameMng.createList();
 		ArrayList<Panel> sutList = gameMng.getPanelList();
@@ -121,4 +120,69 @@ public class BowlingGameTest {
 		assertEquals(sutList.get(9).getThreeRoll(), 3);
 	}
 
+	@Test
+	public void ハイフンを含むスコアが正しいこと() {
+		String score = "1-|2-|-3|44|5-|66|-7|88|-9|1--";
+		gameMng = new BowlingScoreMng(score);
+		gameMng.createList();
+		ArrayList<Panel> sutList = gameMng.getPanelList();
+		assertEquals(sutList.get(0).getNo(), 1);
+		assertEquals(sutList.get(0).getOneRoll(), 1);
+		assertEquals(sutList.get(0).getTwoRoll(), 0);
+		assertEquals(sutList.get(0).getThreeRoll(), 0);
+
+		assertEquals(sutList.get(1).getNo(), 2);
+		assertEquals(sutList.get(1).getOneRoll(), 2);
+		assertEquals(sutList.get(1).getTwoRoll(), 0);
+		assertEquals(sutList.get(1).getThreeRoll(), 0);
+
+		assertEquals(sutList.get(2).getNo(), 3);
+		assertEquals(sutList.get(2).getOneRoll(), 0);
+		assertEquals(sutList.get(2).getTwoRoll(), 3);
+		assertEquals(sutList.get(2).getThreeRoll(), 0);
+
+		assertEquals(sutList.get(3).getNo(), 4);
+		assertEquals(sutList.get(3).getOneRoll(), 4);
+		assertEquals(sutList.get(3).getTwoRoll(), 4);
+		assertEquals(sutList.get(3).getThreeRoll(), 0);
+
+		assertEquals(sutList.get(4).getNo(), 5);
+		assertEquals(sutList.get(4).getOneRoll(), 5);
+		assertEquals(sutList.get(4).getTwoRoll(), 0);
+		assertEquals(sutList.get(4).getThreeRoll(), 0);
+
+		assertEquals(sutList.get(5).getNo(), 6);
+		assertEquals(sutList.get(5).getOneRoll(), 6);
+		assertEquals(sutList.get(5).getTwoRoll(), 6);
+		assertEquals(sutList.get(5).getThreeRoll(), 0);
+
+		assertEquals(sutList.get(6).getNo(), 7);
+		assertEquals(sutList.get(6).getOneRoll(), 0);
+		assertEquals(sutList.get(6).getTwoRoll(), 7);
+		assertEquals(sutList.get(6).getThreeRoll(), 0);
+
+		assertEquals(sutList.get(7).getNo(), 8);
+		assertEquals(sutList.get(7).getOneRoll(), 8);
+		assertEquals(sutList.get(7).getTwoRoll(), 8);
+		assertEquals(sutList.get(7).getThreeRoll(), 0);
+
+		assertEquals(sutList.get(8).getNo(), 9);
+		assertEquals(sutList.get(8).getOneRoll(), 0);
+		assertEquals(sutList.get(8).getTwoRoll(), 9);
+		assertEquals(sutList.get(8).getThreeRoll(), 0);
+
+		assertEquals(sutList.get(9).getNo(), 10);
+		assertEquals(sutList.get(9).getOneRoll(), 1);
+		assertEquals(sutList.get(9).getTwoRoll(), 0);
+		assertEquals(sutList.get(9).getThreeRoll(), 0);
+	}
+
+	@Test
+	public void スペアを含む場合の計算が正しいこと() {
+		String score = "5/|5/|5/|5/|5/|5/|5/|5/|5/|5/1";
+		gameMng = new BowlingScoreMng(score);
+		gameMng.createList();
+		int excepted = 15 + 15 + 15 + 15 + 15 + 15 + 15 + 15 + 15 + 11;
+		assertEquals(gameMng.getTotalScore(), excepted);
+	}
 }

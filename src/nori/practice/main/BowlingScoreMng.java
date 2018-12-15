@@ -16,19 +16,26 @@ public class BowlingScoreMng {
 	public void createList() {
 		this.panelList = new ArrayList<Panel>();
 		Panel p = null;
+		scoreStr = scoreStr.replace("-", "0");
 		List<String> plist = Arrays.asList(scoreStr.split("\\|", 0));
-		int n = 1;
-		for (String ps : plist) {
+
+		for (int i = 0; i < 10; i++) {
 			p = new Panel();
-			p.setNo(n);
-			n++;
-			p.setOneRoll(Integer.parseInt(ps.substring(0, 1)));
-			p.setTwoRoll(Integer.parseInt(ps.substring(1, 2)));
-			if (ps.length() > 2) {
-				p.setThreeRoll(Integer.parseInt(ps.substring(2, 3)));
+			p.setNo(i + 1);
+			p.setOneRoll(Integer.parseInt(plist.get(i).substring(0, 1)));
+			if (plist.get(i).length() > 2) {
+				p.setThreeRoll(Integer.parseInt(plist.get(i).substring(2, 3)));
 			}
+			if ("/".equals(plist.get(i).substring(1, 2))) {
+				p.setSpare(true);
+				this.panelList.add(p);
+				continue;
+			}
+			p.setTwoRoll(Integer.parseInt(plist.get(i).substring(1, 2)));
+
 			this.panelList.add(p);
 		}
+
 	}
 
 	public int getStrScore(String str) {
@@ -41,6 +48,31 @@ public class BowlingScoreMng {
 
 	public ArrayList<Panel> getPanelList() {
 		return this.panelList;
+	}
+
+	public int getTotalScore() {
+		int totalScore = 0;
+		for (Panel panel : this.getPanelList()) {
+			if (panel.isLast()) {
+				panel.setOneRoll(0);
+				panel.setTwoRoll(10);
+				panel.setSpare(false);
+			}
+			if (panel.isSpare()) {
+				int spareScore = getSpareScore(panel.getNo());
+				panel.setSpareScore(spareScore);
+			}
+			totalScore += panel.getScore();
+		}
+
+		return totalScore;
+	}
+
+	private int getSpareScore(int no) {
+		if (no >= 10) {
+			return 0;
+		}
+		return this.panelList.get(no).getOneRoll();
 	}
 
 }
